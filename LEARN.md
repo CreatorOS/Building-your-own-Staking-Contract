@@ -4,12 +4,37 @@
 In this quest, you will learn all about Staking in Ethereum. You will learn about how staking in Ethereum works and how to build your own staking contract. Finally you will also learn about what are the requirements to become a validator and how you can earn rewards for staking your coins as a validator. And finally I will also share with you about how you can get started with Staking and earn rewards😎.  
   
 Sounds interesting? Let’s get started...
+
 ## Gearing Up
 I need you guys to follow along with me and write code yourself step by step and feel proud of it. Feel free to see my code for reference. Open Remix IDE in your browser and copy this boilerplate code so that we can quickly start building.
 
 ```
 
-pragma solidity >=0.7.0 Subquest : Coding the Staking Contract
+pragma solidity >=0.7.0 
+
+contract Storage {
+    function isActive() public view returns(bool) {
+    }
+    function getContractBalance() public view returns(uint){
+    }
+    function deposit() public payable {  
+    }
+    receive() external payable { deposit(); }
+    function withdraw() public {
+    }
+}
+```
+But before building our own staking smart contract, let’s first understand a few terms about Staking in Ethereum.
+
+Ethereum staking:  is the process of locking up some amount of Ethers for a specified period of time in order to contribute to the security of the blockchain and earn rewards. People who do this are known as “stakers”. Ethereum will be operating on what is called a Proof of Stake algorithm to maintain the security. Though there are a lot of nuances to the protocol itself, all that you need to know is that Proof of Stake involves thousands of computers saying “I’m telling you the truth, if you can prove me wrong you can take way the 1000s of dollars that I have staked”. 
+
+You can think of a blockchain as a form of a database anyone can write to and anyone can read from. There are thousands of computers maintaining the sanctity of this database. They do so by voting on what gets written and what gets read from this database. It relies on the fact that atleast half of the computers running this validation are going to be voting for the truth. If any of the computers are provably detected to be acting maliciously, they are punished. So to participate in this voting process a computer or node locks up some money. This money is lost when they misbehave. But, the voters/stakers get rewards for behaving rightfully. 
+
+But why would someone like you be willing to be a staker anyway and why staking is important?
+Stakers like you will be responsible for processing transactions on the Ethereum network and in turn receive rewards. Oftentimes, a validator in a PoS system will increase their chances of earning rewards on the network by staking more coins.
+Conclusion : Stake more coins = Earn more rewards 💸
+
+## Subquest : Coding the Staking Contract
 
 We will be using 3 functions in our contract.  
 We will use isActive() to check if our contract is active for staking, getContractBalance() to get total contract balance, deposit() to deposit some ethers (coins you want to stake and hold) into the contract and withdraw() to withdraw the amount we staked earlier in our contract.
@@ -21,6 +46,7 @@ At first, let’s think about the variables that we need:
 
   
 `uint public deadline = block.timestamp \+ 1 minutes` We also need to keep track of the deadline, the time by which the threshold amount should be gathered. Block.timestamp indicates the time at which contract was deployed and the deadline is \+1 minutes from the time of deployment. You may change the deadline as per your wish.
+
 ## Deposit coins to your contract
 Now that we have all variables in place, we will start writing our function deposit so that we can stake coins. It is important to keep make sure that our contract receives funds when deposit function is executed.
 
@@ -51,12 +77,13 @@ We use the context variables `msg.sender` and `msg.value` to retrieve the sender
   
 We now complete our function isActive(). We check whether the current time is within the deadline and the balance of the contract is more than the threshold amount. If both these conditions are fulfilled, then our contract will be active.
 
+```
 function isActive() public view returns(bool){
 
         return block.timestamp = threshold;
 
-    }
-
+}
+```
   
 Also, we will write a simple function  which you might have already guessed, that it returns the totalContractBalance.
 
@@ -111,6 +138,7 @@ Try to deposit money by entering the amount value at the cell just above the dep
 ![](https://qb-content-staging.s3.ap-south-1.amazonaws.com/public/fb231f7d-06af-4aff-bca3-fd51cb633f77/838a05e9-4c0a-4c57-aacb-aa1675fa62e7.jpg)
 
 You will notice the amount has been reflected in our contract. But if we try to check if our contract stake state is active or not, you will notice that if your added balance is less than the threshold amount, status is false.
+
 ## Withdraw coins from your contract
 Since after deposit comes withdrawal, we will now code the ability to withdraw coins.
 
@@ -140,6 +168,7 @@ balance\[msg.sender\] = 0;
 totalContractBalance -= amount;
 
 We also subtract the amount from our contract balance. Finally we set the active status of our contract back to false if the current time exceeds the deadline mentioned above.
+
 ## 6 - Playing with your Contract
 Now that we have finished setting up our contract, it’s time to test it out.
 
@@ -214,6 +243,7 @@ Now we have several buttons to interact with our contract. First let’s try to 
 Now try to check the contract balance. If the transaction was successful the amount will be reflected in the contract. Since, earlier we had set the threshold stake value to be 3 ethers and now we have deposited 4 ethers. Can you guess the current status of or contract whether it is true or false? Try to think and then check the active status of the contract by clicking on the isActive button. The output should show true since the contract amount is greater than the threshold and the time has not exceeded the set deadline.
 
 This time, if we try to withdraw money from an active contract, you will get relevant error message. You can withdraw coins only after the set deadline.
+
 ## Conclusion
 So what happened here just now? Let’s just recall the concept of staking. We stake/lock our coins for some amount of time in order to become validators. These validators then are responsible to validate and process transactions made on the Ethereum network and in return, these validators are rewarded on equal ratio to every validator in the pool. If the number of validators are less in the pool or if you have staked a higher amount of coins, then you will get a higher percentage of reward. 
 
