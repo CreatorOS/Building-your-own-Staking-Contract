@@ -42,10 +42,10 @@ We will use isActive() to check if our contract is active for staking, getContra
 At first, let’s think about the variables that we need:  
 `uint totalContractBalance = 0` to keep track of the total amount of coins in our contract.  
 `mapping(address => uint) public balance` to update balance staked by each user.  
-`uint constant public threshold = 0.003 \* 10\*\*18` We will use this as a threshold amount. Let’s take it as 0.003 ETH. Observe that we have multiplied our amount with 10^18 because Solidity only supports integer values and we need to convert ETH into wei, which is the smallest unit.
+`uint constant public threshold = 0.003 * 10**18` We will use this as a threshold amount. Let’s take it as 0.003 ETH. Observe that we have multiplied our amount with 10^18 because Solidity only supports integer values and we need to convert ETH into wei, which is the smallest unit.
 
   
-`uint public deadline = block.timestamp \+ 1 minutes` We also need to keep track of the deadline, the time by which the threshold amount should be gathered. Block.timestamp indicates the time at which contract was deployed and the deadline is \+1 minutes from the time of deployment. You may change the deadline as per your wish.
+`uint public deadline = block.timestamp + 1 minutes` We also need to keep track of the deadline, the time by which the threshold amount should be gathered. Block.timestamp indicates the time at which contract was deployed and the deadline is \+1 minutes from the time of deployment. You may change the deadline as per your wish.
 
 ## Deposit coins to your contract
 Now that we have all variables in place, we will start writing our function deposit so that we can stake coins. It is important to keep make sure that our contract receives funds when deposit function is executed.
@@ -64,9 +64,9 @@ The `receive()` is an inbuilt function that is triggered when ethers are sent to
 
 deposit() {
 
-  balance\[msg.sender\] \+= msg.value;
+  balance[msg.sender] += msg.value;
 
-  totalContractBalance \+= msg.value;
+  totalContractBalance += msg.value;
 
 }
 
@@ -80,7 +80,7 @@ We now complete our function isActive(). We check whether the current time is wi
 ```
 function isActive() public view returns(bool){
 
-        return block.timestamp = threshold;
+        return block.timestamp <= deadline && totalContractBalance >= threshold;
 
 }
 ```
@@ -103,15 +103,15 @@ Now at this point, our contract has the following code.
 
 pragma solidity >=0.7.0  uint) public balance;
 
-    uint constant public threshold = 0.003 \* 10\*\*18;
+    uint constant public threshold = 0.003 * 10**18;
 
-    uint public deadline = block.timestamp \+ 1 minutes;
+    uint public deadline = block.timestamp + 1 minutes;
 
     function deposit() public payable {
 
-        balance\[msg.sender\] \+= msg.value;
+        balance[msg.sender] += msg.value;
 
-        totalContractBalance \+= msg.value;
+        totalContractBalance += msg.value;
 
     }
 
@@ -155,15 +155,15 @@ require(block.timestamp > deadline, "deadline hasn't passed yet");
 
 require(!isActive(), "Contract is active");
 
-require(balance\[msg.sender\] > 0, "You haven't deposited");
+require(balance[msg.sender] > 0, "You haven't deposited");
 
 ```
 
 As a next step, we should transfer funds to the user if the withdrawal function is called and then set the balance of the sender to zero. The intuitive way of writing this logic might be something like this:
 
-uint amount = balance\[msg.sender\];
+uint amount = balance[msg.sender];
 
-balance\[msg.sender\] = 0;
+balance[msg.sender] = 0;
 
 totalContractBalance -= amount;
 
@@ -178,9 +178,9 @@ Our final contract now looks like this :
 
 pragma solidity >=0.7.0  uint) public balance;
 
-    uint constant public threshold = 0.003 \* 10\*\*18;
+    uint constant public threshold = 0.003 * 10**18;
 
-    uint public deadline = block.timestamp \+ 1 minutes;
+    uint public deadline = block.timestamp + 1 minutes;
 
     function getContractBalance() public view returns(uint){
 
@@ -198,9 +198,9 @@ pragma solidity >=0.7.0  uint) public balance;
 
     function deposit() public payable {
 
-        balance\[msg.sender\] \+= msg.value;
+        balance[msg.sender] += msg.value;
 
-        totalContractBalance \+= msg.value;
+        totalContractBalance += msg.value;
 
     }
 
@@ -216,13 +216,13 @@ pragma solidity >=0.7.0  uint) public balance;
 
         require(!isActive(), "Contract is active");
 
-        require(balance\[msg.sender\] > 0, "You haven't deposited");
+        require(balance[msg.sender] > 0, "You haven't deposited");
 
         
 
-        uint amount = balance\[msg.sender\];
+        uint amount = balance[msg.sender];
 
-        balance\[msg.sender\] = 0;
+        balance[msg.sender] = 0;
 
         totalContractBalance -= amount;
 
