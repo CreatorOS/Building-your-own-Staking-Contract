@@ -10,7 +10,7 @@ I need you guys to follow along with me and write code yourself step by step and
 
 ```
 
-pragma solidity >=0.7.0 
+pragma solidity >=0.7.0; 
 
 contract Storage {
     function isActive() public view returns(bool) {
